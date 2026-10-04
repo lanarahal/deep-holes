@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Deep Holes</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- MAP SCREEN -->
+  <div id="map-screen" class="screen active">
+    <header class="top-bar">
+      <h1>Deep Holes</h1>
+      <div class="wallet-area">
+        <button id="connect-wallet-btn" class="btn">Connect Wallet</button>
+        <span id="wallet-address" class="hidden"></span>
+      </div>
+    </header>
+
+    <div id="map-container">
+      <canvas id="map-canvas"></canvas>
+
+      <!-- Empty state overlay -->
+      <div id="empty-state" class="empty-state hidden">
+        <h2>No holes yet</h2>
+        <p>Be the first to dig into the earth.</p>
+        <button id="buy-first-hole-btn" class="btn btn-large">Buy Your First Hole</button>
+      </div>
+    </div>
+
+    <div class="bottom-bar">
+      <span class="hint">Click any hole to enter</span>
+      <button id="buy-hole-btn" class="btn">+ Buy New Hole</button>
+    </div>
+  </div>
+
+  <!-- ROOM SCREEN -->
+  <div id="room-screen" class="screen">
+    <header class="top-bar">
+      <button id="back-to-map-btn" class="btn">← Back to Map</button>
+      <h2 id="room-title">Hole</h2>
+      <div id="room-depth-badge" class="badge">Depth 1</div>
+    </header>
+
+    <div id="room-info">
+      <img id="room-image" src="" alt="Hole image" />
+      <div id="room-details">
+        <p id="room-description"></p>
+        <div id="room-links"></div>
+      </div>
+    </div>
+
+    <div id="room-container">
+      <canvas id="room-canvas"></canvas>
+    </div>
+
+    <div class="bottom-bar">
+      <span class="hint">Use ← → or A D to move</span>
+    </div>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
