@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Deep Holes</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- MAP SCREEN -->
+  <div id="map-screen" class="screen active">
+    <header class="top-bar">
+      <h1>Deep Holes</h1>
+      <div class="wallet-area">
+        <button id="connect-wallet-btn" class="btn">Connect Wallet</button>
+        <span id="wallet-address" class="hidden"></span>
+      </div>
+    </header>
+
+    <div id="map-container">
+      <canvas id="map-canvas"></canvas>
+
+      <div id="empty-state" class="empty-state hidden">
+        <h2>No holes yet</h2>
+        <p>Be the first to dig into the earth.</p>
+        <button id="buy-first-hole-btn" class="btn btn-large">Buy Your First Hole</button>
+      </div>
+
+      <!-- Camera hint -->
+      <div class="map-controls">
+        <span>Drag to pan • Arrow keys to move</span>
+      </div>
+    </div>
+
+    <div class="bottom-bar">
+      <span class="hint">Click any hole to enter</span>
+      <button id="buy-hole-btn" class="btn">+ Buy New Hole</button>
+    </div>
+  </div>
+
+  <!-- ROOM SCREEN -->
+  <div id="room-screen" class="screen">
+    <header class="top-bar">
+      <button id="back-to-map-btn" class="btn">← Back to Map</button>
+      <h2 id="room-title">Hole</h2>
+      <div id="room-depth-badge" class="badge">Depth 1</div>
+    </header>
+
+    <div id="room-info">
+      <img id="room-image" src="" alt="Hole image" />
+      <div id="room-details">
+        <p id="room-description"></p>
+        <div id="room-links"></div>
+      </div>
+      <button id="owner-panel-btn" class="btn btn-small hidden">Edit Hole</button>
+    </div>
+
+    <div id="room-container">
+      <canvas id="room-canvas"></canvas>
+    </div>
+
+    <div class="bottom-bar">
+      <span class="hint">Use ← → or A D to move • Room is isometric</span>
+    </div>
+  </div>
+
+  <!-- BUY MODAL -->
+  <div id="buy-modal" class="modal hidden">
+    <div class="modal-content">
+      <h2>Buy a New Hole</h2>
+      <p class="modal-desc">Choose how deep you want to start. Each level costs ~$4 equivalent in SOL.</p>
+      
+      <div class="depth-selector">
+        <label>Starting Depth: <span id="depth-value">1</span></label>
+        <input type="range" id="depth-slider" min="1" max="30" value="1" />
+        <div class="cost-display">
+          Estimated cost: <strong id="cost-display">$4</strong>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button id="cancel-buy-btn" class="btn btn-secondary">Cancel</button>
+        <button id="confirm-buy-btn" class="btn">Confirm & Pay (Simulated)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- OWNER PANEL MODAL -->
+  <div id="owner-modal" class="modal hidden">
+    <div class="modal-content">
+      <h2>Edit Your Hole</h2>
+      
+      <label>Description</label>
+      <textarea id="edit-description" rows="3"></textarea>
+
+      <label>Image URL</label>
+      <input type="text" id="edit-image" placeholder="https://..." />
+
+      <label>Links (label|url, one per line)</label>
+      <textarea id="edit-links" rows="2" placeholder="Twitter|https://x.com"></textarea>
+
+      <div class="deepen-section">
+        <p>Current Depth: <strong id="edit-current-depth">1</strong></p>
+        <button id="deepen-btn" class="btn">Deepen +1 level (~$4)</button>
+      </div>
+
+      <div class="modal-actions">
+        <button id="cancel-edit-btn" class="btn btn-secondary">Cancel</button>
+        <button id="save-edit-btn" class="btn">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
