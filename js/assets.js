@@ -142,43 +142,30 @@ function tinted(e, deg) {
   return tints.get(id);
 }
 
-// White character art needs a real recolour: hue rotation cannot change white pixels.
-// This deliberately leaves non-white details (eyes, outlines, accessories) untouched.
-const whiteTints = new Map(), colorCache = new Map();
-function rgbOf(color) {
-  if (colorCache.has(color)) return colorCache.get(color);
-  const c = document.createElement("canvas"), x = c.getContext("2d");
-  c.width = c.height = 1; x.fillStyle = color || "#ffffff"; x.fillRect(0, 0, 1, 1);
-  const rgb = [...x.getImageData(0, 0, 1, 1).data]; colorCache.set(color, rgb); return rgb;
-}
-function tintWhite(e, color) {
-  const id = e.im.src + "|white|" + color;
-  if (!whiteTints.has(id)) {
+// Colour-tinted copies: a WHITE (or light grey) sprite becomes any colour. Multiply keeps the shading and the
+// black outlines/eyes of the drawing, and the original alpha keeps the silhouette. Cached per image + colour.
+const colourTints = new Map();
+function tintedColour(e, color) {
+  const id = e.im.src + "|c|" + color;
+  if (!colourTints.has(id)) {
+    if (colourTints.size > 300) colourTints.clear();
     const c = document.createElement("canvas"); c.width = e.im.naturalWidth; c.height = e.im.naturalHeight;
-    const x = c.getContext("2d", { willReadFrequently: true }); x.drawImage(e.im, 0, 0);
-    const px = x.getImageData(0, 0, c.width, c.height), d = px.data, [tr, tg, tb] = rgbOf(color);
-    for (let i = 0; i < d.length; i += 4) {
-      const white = Math.min(d[i], d[i + 1], d[i + 2]);
-      if (d[i + 3] && white >= 205) {
-        const mix = (white - 205) / 50, shade = white / 255;
-        d[i] = Math.round(d[i] * (1 - mix) + tr * shade * mix);
-        d[i + 1] = Math.round(d[i + 1] * (1 - mix) + tg * shade * mix);
-        d[i + 2] = Math.round(d[i + 2] * (1 - mix) + tb * shade * mix);
-      }
-    }
-    x.putImageData(px, 0, 0); whiteTints.set(id, c);
+    const x = c.getContext("2d");
+    x.drawImage(e.im, 0, 0);
+    x.globalCompositeOperation = "multiply"; x.fillStyle = color; x.fillRect(0, 0, c.width, c.height);
+    x.globalCompositeOperation = "destination-in"; x.drawImage(e.im, 0, 0);          // restore the original transparency
+    colourTints.set(id, c);
   }
-  return whiteTints.get(id);
+  return colourTints.get(id);
 }
 
 /** Loaded art for a manifest key, or null (=> use the built-in drawing).
- * Pass whiteColor for a white PNG that should follow a character's colour.
- */
-export function art(key, hue = 0, spec = BY_KEY[key], whiteColor = null) {
+ *  `color` (any CSS colour) recolours a white sprite automatically, e.g. art("room-rabbit", 0, undefined, "hsl(200,70%,55%)"). */
+export function art(key, hue = 0, spec = BY_KEY[key], color = null) {
   if (!spec) return null;
   const e = entry(spec.file);
   if (e.state !== "ok") return null;
-  const im = whiteColor ? tintWhite(e, whiteColor) : hue ? tinted(e, hue) : e.im;
+  const im = color ? tintedColour(e, color) : hue ? tinted(e, hue) : e.im;
   return { im, spec, iw: e.im.naturalWidth, ih: e.im.naturalHeight };
 }
 /** Art for a file that is not in the manifest (e.g. depth-12.png). */
